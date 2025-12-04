@@ -3,11 +3,11 @@
 ## Install
 
 ```
-    make build
+make build
 ```
 
 ## Run
 
 ```
-    make run
+make run
 ```

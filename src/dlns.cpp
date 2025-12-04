@@ -1,6 +1,5 @@
 #include "dlns.hpp"
 #include "random.hpp"
-#include <algorithm>
 
 DLNS::DLNS() : m_trail_level{}, m_conflict{}, m_output{OUTPUT::UNKNOWN} {};
 
@@ -81,7 +80,7 @@ void DLNS::propagate()
                 {
                     std::swap(c->lits[1], *l);
                     m_occ.erase(c);
-                    m_occ.insert(*l, &(*c));
+                    m_occ.insert(c->lits[1], &(*c));
                     goto end;
                 }
             }
@@ -101,6 +100,12 @@ void DLNS::propagate()
 
 void DLNS::add_clause(Clause &&clause)
 {
+    if (clause.lits.size() == 1)
+    {
+        assign(clause.lits[0]);
+        return;
+    }
+
     m_clauses.push_back(clause);
     m_occ.insert(m_clauses.rbegin()->lits[0], &(*m_clauses.rbegin()));
     m_occ.insert(m_clauses.rbegin()->lits[1], &(*m_clauses.rbegin()));
@@ -144,7 +149,7 @@ void DLNS::undo()
     }
 
     m_trail.erase(it.base() - 1, m_trail.end());
-    m_trail_level = std::max(0, int(m_trail.size() - 1));
+    m_trail_level = int(m_trail.size());
     m_decision_variables.pop_back();
 }
 

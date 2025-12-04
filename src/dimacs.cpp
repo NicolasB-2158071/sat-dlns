@@ -7,6 +7,11 @@
 void Dimacs::parse(const std::string &path, DLNS &solver)
 {
     std::ifstream file(path);
+    if (file.fail())
+    {
+        throw std::runtime_error{"Unable to open file"};
+    }
+
     while (file)
     {
         std::string word{next_word(file)};
